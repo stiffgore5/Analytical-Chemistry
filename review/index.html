@@ -1,0 +1,1146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Quantitative Analysis Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: lab-notebook study tool. Sticky chapter rail on the left, one reading column on the right.
+   Progress is drawn as a graduated buret; the accent is phenolphthalein pink, the colour of an endpoint. */
+:root {
+  --bg: #f4f5f9;
+  --surface: #ffffff;
+  --sunk: #eceef5;
+  --ink: #1c1b29;
+  --muted: #5b5a70;
+  --line: #d9dae6;
+  --accent: #b3166b;
+  --accent-ink: #ffffff;
+  --accent-soft: #f8e3ef;
+  --ok: #1d7650;
+  --ok-soft: #e0f2e8;
+  --bad: #b3401f;
+  --bad-soft: #fbe7df;
+  --tick: rgba(28, 27, 41, 0.28);
+  --f-display: "Zilla Slab", "Rockwell", "Roboto Slab", Georgia, serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --s-1: 0.8125rem; --s0: 1rem; --s1: 1.125rem; --s2: 1.375rem; --s3: 1.875rem; --s4: 2.5rem;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #13131b; --surface: #1c1b26; --sunk: #24232f; --ink: #ebeaf3; --muted: #a4a2b8; --line: #33323f;
+    --accent: #f06aa9; --accent-ink: #1c0b14; --accent-soft: #3a1c2c;
+    --ok: #62cf98; --ok-soft: #173126; --bad: #ff8d6b; --bad-soft: #3a2018; --tick: rgba(235, 234, 243, 0.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #13131b; --surface: #1c1b26; --sunk: #24232f; --ink: #ebeaf3; --muted: #a4a2b8; --line: #33323f;
+  --accent: #f06aa9; --accent-ink: #1c0b14; --accent-soft: #3a1c2c;
+  --ok: #62cf98; --ok-soft: #173126; --bad: #ff8d6b; --bad-soft: #3a2018; --tick: rgba(235, 234, 243, 0.3);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: var(--s0); line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 48px;
+}
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.15; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); }
+button, input { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+sub, sup { line-height: 0; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+.shell {
+  max-width: 1120px; margin: 0 auto;
+  display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 40px;
+  padding-top: 28px;
+}
+
+/* ---------- chapter rail ---------- */
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 20px); align-self: start; display: grid; gap: 14px; }
+.brand { display: grid; gap: 2px; text-decoration: none; color: var(--ink); }
+.brand b { font-family: var(--f-display); font-size: var(--s2); font-weight: 700; letter-spacing: -0.01em; }
+.brand span { font-size: var(--s-1); color: var(--muted); }
+.chlist { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.chlink {
+  display: grid; grid-template-columns: 2.1em minmax(0, 1fr) auto; align-items: baseline; gap: 6px;
+  padding: 6px 8px; border-radius: var(--r); text-decoration: none; color: var(--ink); font-size: 0.9375rem;
+}
+.chlink:hover { background: var(--sunk); }
+.chlink[aria-current="page"] { background: var(--accent-soft); }
+.chlink .n { font-family: var(--f-mono); color: var(--muted); font-size: var(--s-1); }
+.chlink[aria-current="page"] .n { color: var(--accent); }
+.chlink .t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chlink .sc { font-family: var(--f-mono); font-size: 0.75rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chlink .sc.full { color: var(--ok); }
+
+/* ---------- main column ---------- */
+main { min-width: 0; max-width: 760px; display: grid; gap: 28px; align-content: start; }
+.eyebrow { font-family: var(--f-mono); font-size: var(--s-1); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.lede { color: var(--muted); max-width: 62ch; }
+.head { display: grid; gap: 10px; }
+.head h1 { font-size: var(--s4); font-weight: 700; letter-spacing: -0.015em; }
+
+/* buret progress meter */
+.buret { display: grid; gap: 6px; }
+.buret-tube {
+  position: relative; height: 16px; border: 1.5px solid var(--ink); border-radius: 3px 8px 8px 3px;
+  background: var(--surface); overflow: hidden;
+}
+.buret-fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); width: 0; transition: width 0.5s ease; }
+.buret-ans { position: absolute; inset: 0 auto 0 0; background: var(--accent-soft); width: 0; transition: width 0.5s ease; }
+.buret-tube::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), var(--tick) calc(10% - 1px) 10%) bottom / 100% 45% no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 calc(2% - 1px), var(--tick) calc(2% - 1px) 2%) bottom / 100% 22% no-repeat;
+}
+.buret-legend { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 4px 16px; font-size: var(--s-1); color: var(--muted); }
+.buret-legend .mono { color: var(--ink); }
+
+/* overview */
+.stats { display: flex; flex-wrap: wrap; gap: 12px 32px; }
+.stat { display: grid; }
+.stat b { font-family: var(--f-mono); font-size: var(--s3); font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.stat span { font-size: var(--s-1); color: var(--muted); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+.card {
+  display: grid; gap: 10px; align-content: start; padding: 14px 16px 16px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r);
+  text-decoration: none; color: var(--ink);
+}
+a.card:hover { border-color: var(--accent); }
+.card .n { font-family: var(--f-mono); font-size: var(--s-1); color: var(--muted); }
+.card h3 { font-size: var(--s1); font-weight: 600; }
+.card .buret-tube { height: 10px; }
+
+.panel { display: grid; gap: 14px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.panel h2 { font-size: var(--s2); font-weight: 600; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  border: 1px solid var(--line); background: var(--bg); border-radius: 999px; padding: 3px 11px;
+  font-size: var(--s-1); cursor: pointer; font-family: var(--f-mono);
+}
+.chip[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+
+.btn {
+  border: 1.5px solid var(--ink); background: var(--surface); border-radius: var(--r);
+  padding: 7px 14px; cursor: pointer; font-weight: 500; text-decoration: none; color: var(--ink); display: inline-block;
+}
+.btn:hover { background: var(--sunk); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn.quiet { border-color: var(--line); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* key ideas */
+details.notes { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+details.notes > summary {
+  cursor: pointer; padding: 14px 20px; font-family: var(--f-display); font-size: var(--s1); font-weight: 600;
+  list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px;
+}
+details.notes > summary::-webkit-details-marker { display: none; }
+details.notes > summary::after { content: "+"; font-family: var(--f-mono); color: var(--muted); }
+details.notes[open] > summary::after { content: "−"; }
+.notes-body { padding: 0 20px 18px; display: grid; gap: 16px; }
+.notes-body ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+.notes-body li { max-width: 66ch; }
+.eqs { display: grid; gap: 6px; }
+.eqs h3, .notes-body h3 { font-family: var(--f-mono); font-size: var(--s-1); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.eq {
+  font-family: var(--f-mono); font-size: 0.9375rem; background: var(--sunk); border-radius: 4px;
+  padding: 8px 12px; overflow-x: auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px;
+}
+.eq small { font-family: var(--f-body); color: var(--muted); font-size: var(--s-1); }
+
+/* questions */
+.qlist { display: grid; gap: 14px; }
+.q { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 20px 18px; display: grid; gap: 12px; }
+.q.is-ok { border-color: var(--ok); }
+.q.is-bad { border-color: var(--bad); }
+.q-top { display: flex; justify-content: space-between; gap: 12px; font-family: var(--f-mono); font-size: var(--s-1); color: var(--muted); }
+.q-kind { letter-spacing: 0.06em; text-transform: uppercase; }
+.q-text { font-size: 1.0625rem; max-width: 66ch; }
+.opts { display: grid; gap: 6px; }
+.opt {
+  text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: var(--r);
+  padding: 9px 12px; cursor: pointer; display: grid; grid-template-columns: 1.6em minmax(0, 1fr); gap: 6px; align-items: baseline;
+}
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt:disabled { cursor: default; }
+.opt .k { font-family: var(--f-mono); color: var(--muted); font-size: var(--s-1); }
+.opt.right { border-color: var(--ok); background: var(--ok-soft); }
+.opt.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.num { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.num input {
+  width: 12em; max-width: 100%; padding: 7px 10px; border: 1.5px solid var(--line); border-radius: var(--r);
+  background: var(--bg); font-family: var(--f-mono);
+}
+.num input:focus { border-color: var(--accent); outline: none; }
+.num .unit { font-family: var(--f-mono); color: var(--muted); }
+.hint { font-size: var(--s-1); color: var(--muted); }
+.err { font-size: var(--s-1); color: var(--bad); }
+.fb { border-radius: var(--r); padding: 12px 14px; display: grid; gap: 6px; }
+.fb.ok { background: var(--ok-soft); }
+.fb.bad { background: var(--bad-soft); }
+.fb .verdict { font-weight: 600; }
+.fb.ok .verdict { color: var(--ok); }
+.fb.bad .verdict { color: var(--bad); }
+.fb .why { max-width: 66ch; }
+
+.pager { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.confirm { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: var(--s-1); }
+.result { font-family: var(--f-display); font-size: var(--s2); }
+footer { font-size: var(--s-1); color: var(--muted); max-width: 66ch; }
+
+@media (max-width: 860px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 20px; padding-top: 16px; }
+  .rail { position: static; }
+  .chlist { display: flex; overflow-x: auto; gap: 4px; padding-bottom: 6px; }
+  .chlink { grid-template-columns: auto auto; white-space: nowrap; border: 1px solid var(--line); }
+  .chlink .t { display: none; }
+  .head h1 { font-size: var(--s3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .buret-fill, .buret-ans { transition: none; }
+}
+</style>
+
+<div class="shell">
+  <nav class="rail" aria-label="Chapters">
+    <a class="brand" href="#overview"><b>Quant Review</b><span>Chapters 0–12 · quizzes &amp; key ideas</span></a>
+    <ul class="chlist" id="chlist"></ul>
+  </nav>
+  <main id="main"></main>
+</div>
+
+<script>
+/* ============================================================
+   CONTENT
+   q.t: "mc" (multiple choice, a = index of correct option)
+        "num" (numeric, a = value, tol = absolute tolerance or rel = relative tolerance,
+               show = answer as displayed, unit = unit label)
+   All questions and summaries are original review material.
+   ============================================================ */
+const CH = [
+{
+  n: 0, title: "The Analytical Process",
+  ideas: [
+    "<b>Qualitative</b> analysis finds out <i>what</i> is present; <b>quantitative</b> analysis finds out <i>how much</i>.",
+    "A typical analysis runs: formulate the question → choose a procedure → collect a representative sample → prepare the sample → analyze replicates against a calibration → report and interpret → draw conclusions.",
+    "A <b>bulk sample</b> is reduced to a homogeneous <b>laboratory sample</b>; an <b>aliquot</b> is the measured portion actually analyzed.",
+    "Heterogeneous material can be <b>random</b> or <b>segregated</b>. A <b>composite sample</b> combines portions from different regions so the result represents the whole.",
+    "An <b>interference</b> responds like the analyte or changes its signal. A <b>masking agent</b> ties up an interfering species so it no longer responds.",
+    "A <b>calibration curve</b> relates instrument response to known concentrations so an unknown can be read from its signal."
+  ],
+  eqs: [ ["signal = m·[analyte] + b", "Linear calibration: read [analyte] = (signal − b)/m"] ],
+  qs: [
+    { t:"mc", q:"A lab is asked to find the mass of lead in each gram of a soil sample. What kind of analysis is this?",
+      o:["Qualitative","Quantitative","Gravimetric only","Speciation only"], a:1,
+      why:"Measuring <i>how much</i> lead is present is quantitative. Knowing only whether lead is present would be qualitative." },
+    { t:"mc", q:"What is an <b>aliquot</b>?",
+      o:["The entire bulk material that was sampled","A blank solution with no analyte","A measured portion of the laboratory sample taken for analysis","A reference material with certified composition"], a:2,
+      why:"An aliquot is a precisely measured portion (for example, a 25.00 mL pipet volume) taken from the prepared laboratory sample." },
+    { t:"mc", q:"Which step should come <b>first</b> in a well-planned chemical analysis?",
+      o:["Choosing an instrument","Calibrating the balance","Collecting the sample","Formulating the question the analysis must answer"], a:3,
+      why:"The question determines which analytes, detection limits and sampling plan you need. Everything else follows from it." },
+    { t:"mc", q:"A grain silo has layers of wheat harvested from different fields. Why would you combine scoops taken at many depths?",
+      o:["To make a composite sample that represents a segregated material","To increase the analyte concentration","To remove interferences","To make the sample dissolve faster"], a:0,
+      why:"Layered material is <b>segregated heterogeneous</b>. Combining portions from each region in proportion gives a composite sample that represents the whole silo." },
+    { t:"mc", q:"Fluoride is added to a sample so that Fe<sup>3+</sup> forms a stable complex and no longer reacts with the reagent used to measure Al<sup>3+</sup>. The fluoride is acting as a…",
+      o:["Titrant","Masking agent","Internal standard","Primary standard"], a:1,
+      why:"A masking agent selectively binds an interfering species so it stops contributing to (or disturbing) the analyte's signal." },
+    { t:"num", q:"A calibration line is <span class=\"mono\">A = 0.0452·C + 0.003</span>, with C in µg/mL. An unknown gives absorbance 0.364. What is its concentration?",
+      a:7.987, tol:0.02, show:"7.99 µg/mL", unit:"µg/mL",
+      why:"C = (A − b)/m = (0.364 − 0.003)/0.0452 = 0.361/0.0452 = <b>7.99 µg/mL</b>." },
+    { t:"mc", q:"Why do analysts run <b>replicate</b> measurements on several aliquots?",
+      o:["To remove systematic error","To estimate the precision (random variation) of the result","Because instruments require warm-up","To avoid needing a calibration curve"], a:1,
+      why:"Replicates show how much results scatter, which estimates random error. They cannot reveal a bias that affects every replicate equally." },
+    { t:"mc", q:"Which activity belongs to <b>sample preparation</b>?",
+      o:["Choosing which lake to sample","Dissolving a rock in acid and removing interfering ions","Writing the final report","Plotting the calibration curve"], a:1,
+      why:"Sample preparation converts the representative sample into a form suitable for measurement: dissolving, concentrating, removing or masking interferences." }
+  ]
+},
+{
+  n: 1, title: "Chemical Measurements",
+  ideas: [
+    "SI prefixes used constantly: k = 10<sup>3</sup>, m = 10<sup>−3</sup>, µ = 10<sup>−6</sup>, n = 10<sup>−9</sup>, p = 10<sup>−12</sup>, f = 10<sup>−15</sup>.",
+    "<b>Molarity</b> (M) is moles of solute per liter of <i>solution</i>. <b>Molality</b> (m) is moles of solute per kilogram of <i>solvent</i>, so it does not change with temperature.",
+    "<b>Formal concentration</b> (F) counts a substance as it was formulated, whether or not it dissociates in solution.",
+    "Weight percent, volume percent, ppm (×10<sup>6</sup>) and ppb (×10<sup>9</sup>) are mass or volume ratios. In dilute water, 1 ppm ≈ 1 µg/mL = 1 mg/L.",
+    "Dilution conserves moles of solute: M<sub>conc</sub>·V<sub>conc</sub> = M<sub>dil</sub>·V<sub>dil</sub>.",
+    "Gravimetric calculations convert the mass of a weighed product to the mass of analyte using formula masses and mole ratios."
+  ],
+  eqs: [
+    ["M = mol solute / L solution", ""],
+    ["ppm = (mass analyte / mass sample) × 10⁶", ""],
+    ["M_conc · V_conc = M_dil · V_dil", "Moles before dilution = moles after"],
+    ["M = (density g/mL × 1000 mL/L × wt fraction) / FM", "Molarity of a concentrated reagent"]
+  ],
+  qs: [
+    { t:"num", q:"What mass of NaCl (FM 58.44 g/mol) is needed to make 250.0 mL of 0.1500 M NaCl?",
+      a:2.1915, tol:0.002, show:"2.192 g", unit:"g",
+      why:"mol = 0.1500 mol/L × 0.2500 L = 0.03750 mol. Mass = 0.03750 × 58.44 = <b>2.192 g</b>." },
+    { t:"num", q:"10.00 mL of 0.500 M HNO<sub>3</sub> is diluted to 250.0 mL. What is the new concentration?",
+      a:0.0200, tol:0.0002, show:"0.0200 M", unit:"M",
+      why:"M<sub>dil</sub> = (0.500 M)(10.00 mL)/(250.0 mL) = <b>0.0200 M</b>." },
+    { t:"num", q:"Concentrated HCl is 37.0 wt% HCl with a density of 1.18 g/mL. What is its molarity? (FM HCl = 36.46)",
+      a:11.97, tol:0.1, show:"12.0 M", unit:"M",
+      why:"1 L weighs 1180 g, of which 0.370 × 1180 = 436.6 g is HCl. 436.6 g ÷ 36.46 g/mol = <b>12.0 M</b>." },
+    { t:"mc", q:"Why is molality sometimes preferred over molarity for precise physical measurements?",
+      o:["It is easier to measure volumes than masses","It does not change when temperature changes","It is always numerically larger","It includes the activity coefficient"], a:1,
+      why:"Molality is based on masses, which don't change with temperature. Solution volume expands on warming, so molarity drifts." },
+    { t:"num", q:"2.5 mg of a pesticide is dissolved in 500 g of water. What is its concentration in ppm (by mass)?",
+      a:5.0, tol:0.05, show:"5.0 ppm", unit:"ppm",
+      why:"ppm = (2.5 × 10<sup>−3</sup> g / 500 g) × 10<sup>6</sup> = <b>5.0 ppm</b>." },
+    { t:"num", q:"Tap water contains 5.0 ppm Fe (atomic mass 55.845). Express this as molarity. (Treat 1 ppm as 1 mg/L.) Enter scientific notation like <span class=\"mono\">1.2e-5</span>.",
+      a:8.95e-5, rel:0.02, show:"8.95 × 10⁻⁵ M", unit:"M",
+      why:"5.0 mg/L ÷ 55 845 mg/mol = <b>8.95 × 10<sup>−5</sup> M</b>." },
+    { t:"num", q:"A 0.2500 g sample is dissolved and all its chloride precipitated as AgCl (FM 143.32), which weighs 0.4352 g. What is the weight percent Cl (35.453) in the sample?",
+      a:43.06, tol:0.06, show:"43.06 %", unit:"wt %",
+      why:"Mass Cl = 0.4352 g × (35.453/143.32) = 0.10765 g. Wt% = 0.10765/0.2500 × 100 = <b>43.06%</b>." },
+    { t:"mc", q:"0.10 F acetic acid is partly dissociated in water. What does “0.10 F” tell you?",
+      o:["[CH<sub>3</sub>CO<sub>2</sub>H] at equilibrium is exactly 0.10 M","[CH<sub>3</sub>CO<sub>2</sub><sup>−</sup>] is 0.10 M","0.10 mol of acetic acid was dissolved per liter, regardless of how it dissociates","The solution has 0.10 mol of acid per kilogram of water"], a:2,
+      why:"Formal concentration counts the total as formulated. At equilibrium [HA] + [A<sup>−</sup>] = 0.10 M, and neither one alone equals 0.10 M." },
+    { t:"mc", q:"Which quantity equals 10<sup>−6</sup> L?",
+      o:["1 nL","1 mL","1 µL","1 pL"], a:2,
+      why:"The prefix micro (µ) means 10<sup>−6</sup>, so 1 µL = 10<sup>−6</sup> L." }
+  ]
+},
+{
+  n: 2, title: "Tools of the Trade",
+  ideas: [
+    "Handle chemicals safely and ethically: know the hazards (safety data sheets), work in a hood when needed, and minimize and correctly dispose of waste.",
+    "A lab notebook is bound and written in ink. Record what you did and what you observed, clearly enough for a stranger to repeat it. Cross out errors with one line and never remove pages.",
+    "Air buoyancy makes objects appear lighter than they are. The correction is largest for low-density objects, such as water and organic liquids.",
+    "Read a buret at the bottom of the meniscus with your eye level to it (to avoid parallax), and estimate to 0.01 mL.",
+    "Volumetric flasks are calibrated <b>to contain</b> (TC); transfer pipets are calibrated <b>to deliver</b> (TD). Never heat volumetric glassware, because it may not return to its calibrated volume.",
+    "Calibrate glassware by weighing the water it contains or delivers and converting mass to volume with the density of water at that temperature.",
+    "Dry reagents and precipitates to <b>constant mass</b> (repeated heating and weighing until the mass stops changing) and store them in a desiccator."
+  ],
+  eqs: [
+    ["m = m′ (1 − dₐ/d_w) / (1 − dₐ/d)", "m′ = balance reading, dₐ ≈ 0.0012 g/mL (air), d_w ≈ 8.0 g/mL (weights), d = object density"],
+    ["V = m_water × (mL per g at T)", "Glassware calibration"]
+  ],
+  qs: [
+    { t:"mc", q:"For which object is the buoyancy correction <b>largest</b> when weighed on a balance with 8.0 g/mL steel weights?",
+      o:["A gold coin (19 g/mL)","A brass weight (8.4 g/mL)","Water (1.00 g/mL)","Platinum foil (21 g/mL)"], a:2,
+      why:"The correction depends on how different the object's density is from the weights'. Low-density water displaces much more air per gram, so its correction is largest." },
+    { t:"num", q:"An object with density 1.00 g/mL gives a balance reading of 10.0000 g. Using dₐ = 0.0012 g/mL and d<sub>w</sub> = 8.0 g/mL, what is its true mass?",
+      a:10.0105, tol:0.0003, show:"10.0105 g", unit:"g",
+      why:"m = 10.0000 × (1 − 0.0012/8.0)/(1 − 0.0012/1.00) = 10.0000 × 0.99985/0.9988 = <b>10.0105 g</b>. That is a 0.1% error if you ignore buoyancy." },
+    { t:"mc", q:"How should a buret be read?",
+      o:["At the top of the meniscus, from above","At the bottom of the meniscus, with your eye level to it","At the bottom of the meniscus, from below to magnify it","Anywhere, as long as it's always the same way"], a:1,
+      why:"For aqueous solutions, read the bottom of the curved meniscus with your eye level to it. Viewing from above or below introduces parallax error." },
+    { t:"mc", q:"A transfer pipet is marked “TD 20 °C.” What does this mean?",
+      o:["It contains 20 mL","It is calibrated to deliver its stated volume at 20 °C","It must be dried at 20 °C","Its tolerance is 20 µL"], a:1,
+      why:"TD means “to deliver.” The stated volume flows out when the pipet is drained correctly at the calibration temperature. A small residue stays in the tip by design." },
+    { t:"mc", q:"Why shouldn't you dry a volumetric flask in a hot oven?",
+      o:["The glass can deform and may not return to its calibrated volume","It will absorb CO<sub>2</sub>","It removes the TC marking","Hot glass contaminates the next solution with silica"], a:0,
+      why:"Heating can permanently change the volume of precision glassware. Rinse it with the solution to be used, or let it air dry." },
+    { t:"num", q:"Water delivered by a 10 mL pipet weighs 9.9824 g in air at 20 °C. At this temperature each gram of water weighed in air corresponds to 1.0029 mL. What volume does the pipet deliver?",
+      a:10.0113, tol:0.002, show:"10.011 mL", unit:"mL",
+      why:"V = 9.9824 g × 1.0029 mL/g = <b>10.011 mL</b>. Use this calibrated volume, not the nominal 10.00 mL, for the most accurate work." },
+    { t:"mc", q:"A crucible is heated, cooled in a desiccator and weighed three times: 15.2148, 15.2131, 15.2130 g. What can you conclude?",
+      o:["It is still losing mass and needs more heating","It has reached constant mass (the last two weighings agree)","The balance is broken","It has gained water"], a:1,
+      why:"Constant mass means successive heating-and-weighing cycles agree within the expected uncertainty. The last two readings differ by only 0.1 mg." },
+    { t:"mc", q:"You make a mistake writing a mass in your lab notebook. What is the proper way to fix it?",
+      o:["Use correction fluid and rewrite","Tear out the page","Draw a single line through it, write the correct value, and note why","Copy the whole page neatly onto a new page"], a:2,
+      why:"The original entry should stay readable. A single line-out keeps a permanent record of what happened." }
+  ]
+},
+{
+  n: 3, title: "Experimental Error",
+  ideas: [
+    "<b>Significant figures</b> are the digits needed to write a value in scientific notation without losing precision. The last one is uncertain.",
+    "Addition/subtraction: keep the decimal place of the least precise number. Multiplication/division: keep the number of sig figs of the least precise factor.",
+    "For logarithms, the digits after the decimal point (the mantissa) equal the sig figs in the original number. Antilogs reverse this rule.",
+    "<b>Systematic</b> (determinate) error is a reproducible bias that can, in principle, be found and corrected. <b>Random</b> (indeterminate) error is always present and is equally likely to be + or −.",
+    "<b>Accuracy</b> is closeness to the true value; <b>precision</b> is reproducibility.",
+    "Uncertainties propagate: absolute uncertainties combine in quadrature for + and −; relative uncertainties combine in quadrature for × and ÷.",
+    "Keep extra (guard) digits through a calculation and round only at the end."
+  ],
+  eqs: [
+    ["y = x₁ ± x₂  →  e_y = √(e₁² + e₂²)", "Absolute uncertainties"],
+    ["y = x₁·x₂ or x₁/x₂  →  %e_y = √(%e₁² + %e₂²)", "Relative uncertainties"],
+    ["y = xᵃ  →  %e_y = a·%e_x", ""],
+    ["y = log x  →  e_y = 0.43429·(e_x/x)", "y = 10ˣ  →  e_y/y = 2.3026·e_x"]
+  ],
+  qs: [
+    { t:"mc", q:"How many significant figures are in <span class=\"mono\">0.03080</span>?",
+      o:["3","4","5","6"], a:1,
+      why:"Leading zeros only locate the decimal point. In 3.080 × 10<sup>−2</sup> the digits 3, 0, 8, 0 are significant, so there are <b>4</b>." },
+    { t:"mc", q:"Express <span class=\"mono\">log(4.37 × 10<sup>−3</sup>)</span> with the correct number of digits.",
+      o:["−2.36","−2.360","−2.3595","−2.4"], a:1,
+      why:"4.37 has 3 sig figs, so the mantissa keeps 3 digits: −2.3595… rounds to <b>−2.360</b>. The characteristic (−2) only reflects the power of ten." },
+    { t:"mc", q:"Report <span class=\"mono\">12.41 + 3.2 + 0.016</span> correctly.",
+      o:["15.626","15.63","15.6","16"], a:2,
+      why:"In addition, the least precise term (3.2) sets the last decimal place: 15.626 → <b>15.6</b>." },
+    { t:"num", q:"Calculate the absolute uncertainty in (1.76 ± 0.03) − (0.59 ± 0.02).",
+      a:0.036, tol:0.004, show:"± 0.04 (0.036)", unit:"",
+      why:"e = √(0.03² + 0.02²) = √0.0013 = 0.036. The result is <b>1.17 ± 0.04</b>." },
+    { t:"num", q:"Calculate the absolute uncertainty in (2.00 ± 0.02) × (3.00 ± 0.09).",
+      a:0.19, tol:0.01, show:"± 0.19", unit:"",
+      why:"Relative uncertainties are 1.0% and 3.0%. √(1.0² + 3.0²) = 3.16%. 3.16% of 6.00 = <b>0.19</b>, so 6.00 ± 0.19." },
+    { t:"num", q:"A solution has pH = 4.50 ± 0.03. What is the <b>percent relative uncertainty</b> in [H<sup>+</sup>]?",
+      a:6.9, tol:0.2, show:"6.9 %", unit:"%",
+      why:"[H<sup>+</sup>] = 10<sup>−pH</sup>, so e/y = 2.3026 × 0.03 = 0.069, which is <b>6.9%</b>. A small pH uncertainty becomes a much larger concentration uncertainty." },
+    { t:"mc", q:"A pipet consistently delivers 0.02 mL more than its nominal volume. This produces…",
+      o:["Random error","Systematic error","A gross blunder","No error, because it is consistent"], a:1,
+      why:"A reproducible bias in the same direction is systematic error. Calibrating the pipet would detect it and correct for it." },
+    { t:"mc", q:"Five replicate results cluster tightly at 12.8 mg, but the certified value is 14.0 mg. The method is…",
+      o:["Accurate and precise","Precise but not accurate","Accurate but not precise","Neither accurate nor precise"], a:1,
+      why:"A tight cluster means good precision. Its distance from the true value reveals a systematic error, so accuracy is poor." },
+    { t:"mc", q:"Why keep one or two extra digits during multi-step calculations?",
+      o:["To make the answer look more precise","To avoid accumulating round-off error before the final rounding","Because calculators require it","To convert random error into systematic error"], a:1,
+      why:"Rounding at each step can shift the final answer. Carry guard digits and round once at the end." }
+  ]
+},
+{
+  n: 4, title: "Statistics",
+  ideas: [
+    "Many replicate results follow a <b>Gaussian</b> distribution characterized by mean x̄ and standard deviation s.",
+    "About 68.3% of measurements fall within ±1σ of the mean, 95.5% within ±2σ and 99.7% within ±3σ.",
+    "A <b>confidence interval</b> x̄ ± ts/√n is likely to contain the true mean. Student's t depends on the confidence level and the degrees of freedom (n − 1).",
+    "The <b>F test</b> compares two standard deviations. <b>t tests</b> compare a mean with a known value, two independent means, or paired differences.",
+    "The <b>Grubbs test</b> decides whether a single suspicious point can be discarded: G = |questionable − x̄|/s.",
+    "The <b>method of least squares</b> fits the best straight line to calibration data. Interpolate within the calibration range; don't extrapolate."
+  ],
+  eqs: [
+    ["s = √[ Σ(xᵢ − x̄)² / (n − 1) ]", ""],
+    ["µ = x̄ ± t·s/√n", "Confidence interval"],
+    ["F = s₁² / s₂²  (s₁ ≥ s₂)", ""],
+    ["G = |x_q − x̄| / s", "Reject if G_calc > G_table"],
+    ["m = Σ(xᵢ − x̄)(yᵢ − ȳ) / Σ(xᵢ − x̄)²,   b = ȳ − m·x̄", "Least-squares slope and intercept"]
+  ],
+  qs: [
+    { t:"num", q:"Find the mean of 10.12, 10.18, 10.15, 10.09 and 10.16.",
+      a:10.140, tol:0.001, show:"10.140", unit:"",
+      why:"Sum = 50.70; 50.70/5 = <b>10.140</b>." },
+    { t:"num", q:"Find the standard deviation of the same five values (10.12, 10.18, 10.15, 10.09, 10.16).",
+      a:0.0354, tol:0.0012, show:"0.035", unit:"",
+      why:"Deviations: −0.02, +0.04, +0.01, −0.05, +0.02. Squares sum to 0.0050. s = √(0.0050/4) = <b>0.035</b>." },
+    { t:"num", q:"For those five values (x̄ = 10.140, s = 0.0354), find the half-width of the 95% confidence interval. Student's t for 4 degrees of freedom = 2.776.",
+      a:0.0439, tol:0.002, show:"± 0.044", unit:"",
+      why:"ts/√n = 2.776 × 0.0354/√5 = <b>0.044</b>, so µ = 10.140 ± 0.044 at 95% confidence." },
+    { t:"mc", q:"What fraction of a Gaussian population lies within ±2σ of the mean?",
+      o:["50%","68.3%","95.5%","99.7%"], a:2,
+      why:"±1σ ≈ 68.3%, ±2σ ≈ 95.5%, ±3σ ≈ 99.7%." },
+    { t:"mc", q:"Which test tells you whether two methods have significantly different <b>precision</b>?",
+      o:["Grubbs test","F test","Paired t test","Least squares"], a:1,
+      why:"The F test compares variances: F = s<sub>1</sub><sup>2</sup>/s<sub>2</sub><sup>2</sup> with the larger on top. If F<sub>calc</sub> > F<sub>table</sub>, the standard deviations differ significantly." },
+    { t:"num", q:"Replicates: 7.4, 7.6, 7.5, 7.5, 8.3. Calculate the Grubbs statistic G for the value 8.3. (x̄ = 7.66)",
+      a:1.755, tol:0.02, show:"1.75", unit:"",
+      why:"s = √(0.532/4) = 0.365. G = |8.3 − 7.66|/0.365 = <b>1.75</b>." },
+    { t:"mc", q:"For five observations, G<sub>table</sub> (95%) = 1.715. With G<sub>calc</sub> = 1.75 for the 8.3 result, what should you do?",
+      o:["Keep 8.3, because G<sub>calc</sub> > G<sub>table</sub>","Discard 8.3, because G<sub>calc</sub> > G<sub>table</sub>","Discard the whole data set","Average 8.3 with its nearest neighbor"], a:1,
+      why:"G<sub>calc</sub> exceeds G<sub>table</sub>, so 8.3 can be rejected at 95% confidence. Still try to find out what went wrong with that measurement." },
+    { t:"mc", q:"A t test comparing your mean with a certified value gives t<sub>calc</sub> = 4.1 while t<sub>table</sub> (95%) = 2.78. What do you conclude?",
+      o:["The difference is significant at 95% confidence","The difference is due to random error","The method is precise","You need an F test instead"], a:0,
+      why:"If t<sub>calc</sub> > t<sub>table</sub>, the difference is larger than random error would plausibly produce, suggesting a systematic error." },
+    { t:"num", q:"Least-squares: find the slope for (x, y) = (0, 0.010), (1, 0.115), (2, 0.208), (3, 0.311), (4, 0.405).",
+      a:0.0986, tol:0.0005, show:"0.0986", unit:"",
+      why:"x̄ = 2, ȳ = 0.2098. Σ(x − x̄)(y − ȳ) = 0.986 and Σ(x − x̄)² = 10, so m = <b>0.0986</b> (b = 0.0126)." },
+    { t:"mc", q:"Two methods each measure the cholesterol in 10 <i>different</i> patients' samples once. Which test compares the methods?",
+      o:["F test","t test for two independent means","Paired t test","Grubbs test"], a:2,
+      why:"Each sample is measured by both methods, so analyze the <i>differences</i> for each pair. This removes the large patient-to-patient variation." }
+  ]
+},
+{
+  n: 5, title: "Quality Assurance and Calibration Methods",
+  ideas: [
+    "Quality assurance starts from <b>use objectives</b> (why the data are needed), sets <b>specifications</b> (required accuracy, precision, detection limit), and uses <b>assessment</b> to show they were met.",
+    "Blanks find contamination: a <b>method blank</b> goes through every step, a <b>reagent blank</b> leaves out the sample, and a <b>field blank</b> travels to the sampling site and back.",
+    "A <b>spike</b> (a known addition of analyte) tests recovery. A <b>control chart</b> tracks a standard over time with warning lines (±2σ) and action lines (±3σ).",
+    "Method validation shows selectivity, accuracy, precision (instrument, intra-assay, intermediate, interlaboratory), linearity, range, limits of detection and quantitation, and robustness.",
+    "Detection limit ≈ 3s/m and quantitation limit ≈ 10s/m, where s is the standard deviation of low-concentration samples and m is the calibration slope.",
+    "<b>Standard addition</b> corrects for matrix effects by adding known amounts of analyte to the sample itself. An <b>internal standard</b> (a different compound added in known amount) corrects for variations in volume or instrument response."
+  ],
+  eqs: [
+    ["% recovery = (C_spiked − C_unspiked)/C_added × 100", ""],
+    ["LOD = 3s/m     LOQ = 10s/m", "Concentration limits"],
+    ["[X]ᵢ / ([S]_f + [X]_f) = I_X / I_(S+X)", "Standard addition"],
+    ["A_X/[X] = F · (A_S/[S])", "Internal standard, response factor F"]
+  ],
+  qs: [
+    { t:"num", q:"An unspiked water sample measures 10.0 µg/L lead. After a spike adds 20.0 µg/L, the sample measures 28.6 µg/L. What is the spike recovery?",
+      a:93, tol:0.6, show:"93 %", unit:"%",
+      why:"Recovery = (28.6 − 10.0)/20.0 × 100 = <b>93%</b>." },
+    { t:"num", q:"Replicate low-concentration standards have s = 0.0020 absorbance units. The calibration slope is 0.0450 absorbance/ppm. What is the detection limit?",
+      a:0.133, tol:0.004, show:"0.13 ppm", unit:"ppm",
+      why:"LOD = 3s/m = 3(0.0020)/0.0450 = <b>0.13 ppm</b>." },
+    { t:"mc", q:"With the same data (s = 0.0020, m = 0.0450 per ppm), what is the lower limit of quantitation?",
+      o:["0.044 ppm","0.13 ppm","0.44 ppm","1.3 ppm"], a:2,
+      why:"LOQ = 10s/m = 10(0.0020)/0.0450 = <b>0.44 ppm</b>, which is about 3.3 times the detection limit." },
+    { t:"mc", q:"When is <b>standard addition</b> the best calibration choice?",
+      o:["When the matrix is unknown or complex and changes the analyte's signal","When the analyte is a primary standard","When there is no instrument drift","When the sample volume is unknown"], a:0,
+      why:"Because the standard is added to the sample itself, analyte and standard experience the same matrix. Matrix effects cancel." },
+    { t:"num", q:"An unknown gives a signal of 0.300. Adding standard raises the analyte concentration by 5.00 ppm (assume negligible volume change), and the signal becomes 0.500. What was the original concentration?",
+      a:7.50, tol:0.05, show:"7.50 ppm", unit:"ppm",
+      why:"[X]/([X] + 5.00) = 0.300/0.500 gives 0.500[X] = 0.300[X] + 1.50, so [X] = <b>7.50 ppm</b>." },
+    { t:"num", q:"A standard mixture has [X] = 0.0400 M and [S] = 0.0500 M with peak areas A<sub>X</sub> = 300 and A<sub>S</sub> = 400. An unknown is spiked so [S] = 0.0250 M, giving A<sub>X</sub> = 250 and A<sub>S</sub> = 210. Find [X] in the unknown.",
+      a:0.03175, tol:0.0003, show:"0.0317 M", unit:"M",
+      why:"F = (300/0.0400)/(400/0.0500) = 7500/8000 = 0.9375. Then [X] = (A<sub>X</sub>/A<sub>S</sub>)·[S]/F = (250/210)(0.0250)/0.9375 = <b>0.0317 M</b>." },
+    { t:"mc", q:"On a control chart, one result falls outside the ±3σ action line. What should happen?",
+      o:["Nothing, because one point is expected occasionally","Stop and find the problem before reporting more results","Average it with the previous point","Widen the action lines"], a:1,
+      why:"Points beyond the action lines should occur only about 0.3% of the time. Treat one as a signal that the process is out of control." },
+    { t:"mc", q:"Which blank reveals contamination picked up during sample collection, transport and storage?",
+      o:["Reagent blank","Method blank","Field blank","Instrument blank"], a:2,
+      why:"A field blank is taken to the sampling site and handled exactly like real samples, so it records contamination from the whole collection chain." },
+    { t:"mc", q:"A method's ability to measure the analyte without response from other species in the sample is its…",
+      o:["Linearity","Robustness","Selectivity (specificity)","Range"], a:2,
+      why:"Selectivity, also called specificity, is the method's ability to tell the analyte apart from interferences." }
+  ]
+},
+{
+  n: 6, title: "Chemical Equilibrium",
+  ideas: [
+    "For aA + bB ⇌ cC + dD, K = [C]<sup>c</sup>[D]<sup>d</sup>/[A]<sup>a</sup>[B]<sup>b</sup>. Concentrations are in M and gases in bar; pure solids, pure liquids and the solvent are left out.",
+    "Reversing a reaction gives 1/K. Adding reactions multiplies their K values.",
+    "ΔG° = ΔH° − TΔS° and K = e<sup>−ΔG°/RT</sup>. A reaction is favorable when ΔG < 0.",
+    "Compare the reaction quotient Q with K: if Q > K, the reaction runs backward; if Q < K, it runs forward (Le Châtelier). Raising temperature increases K for an endothermic reaction.",
+    "The solubility product K<sub>sp</sub> describes a slightly soluble salt in equilibrium with its ions. A <b>common ion</b> lowers its solubility.",
+    "Brønsted acids donate H<sup>+</sup> and bases accept it, forming conjugate pairs. K<sub>w</sub> = [H<sup>+</sup>][OH<sup>−</sup>] = 1.0 × 10<sup>−14</sup> at 25 °C, and K<sub>a</sub>·K<sub>b</sub> = K<sub>w</sub> for a conjugate pair.",
+    "Common strong acids: HCl, HBr, HI, HNO<sub>3</sub>, HClO<sub>4</sub> and H<sub>2</sub>SO<sub>4</sub> (first proton)."
+  ],
+  eqs: [
+    ["K = e^(−ΔG°/RT)", "R = 8.314 J/(mol·K)"],
+    ["K_sp = [M]ᵐ[X]ˣ", "For MX₂: K_sp = 4s³"],
+    ["pH = −log[H⁺],  pH + pOH = 14.00 (25 °C)", ""],
+    ["K_a · K_b = K_w", ""]
+  ],
+  qs: [
+    { t:"mc", q:"A ⇌ B has K = 1.0 × 10<sup>3</sup> and B ⇌ C has K = 1.0 × 10<sup>−2</sup>. What is K for A ⇌ C?",
+      o:["1.0 × 10<sup>5</sup>","10","1.0 × 10<sup>−5</sup>","1.0 × 10<sup>3</sup> − 10<sup>−2</sup>"], a:1,
+      why:"Adding reactions multiplies their equilibrium constants: 10<sup>3</sup> × 10<sup>−2</sup> = <b>10</b>." },
+    { t:"num", q:"A salt MX<sub>2</sub> has K<sub>sp</sub> = 4.0 × 10<sup>−12</sup>. What is its solubility (mol/L) in pure water? Use scientific notation like <span class=\"mono\">1e-4</span>.",
+      a:1.0e-4, rel:0.02, show:"1.0 × 10⁻⁴ M", unit:"M",
+      why:"MX<sub>2</sub> ⇌ M<sup>2+</sup> + 2X<sup>−</sup>, so K<sub>sp</sub> = s(2s)<sup>2</sup> = 4s<sup>3</sup>. s<sup>3</sup> = 1.0 × 10<sup>−12</sup>, giving s = <b>1.0 × 10<sup>−4</sup> M</b>." },
+    { t:"num", q:"What is the solubility of AgCl (K<sub>sp</sub> = 1.8 × 10<sup>−10</sup>) in 0.10 M NaCl? (Ignore activity.)",
+      a:1.8e-9, rel:0.03, show:"1.8 × 10⁻⁹ M", unit:"M",
+      why:"[Cl<sup>−</sup>] ≈ 0.10 M from NaCl. [Ag<sup>+</sup>] = K<sub>sp</sub>/0.10 = <b>1.8 × 10<sup>−9</sup> M</b>, about 7000 times less than in pure water (1.3 × 10<sup>−5</sup> M). That's the common ion effect." },
+    { t:"num", q:"A reaction has ΔG° = −10.0 kJ/mol at 298.15 K. What is K?",
+      a:56.5, tol:0.7, show:"56.5", unit:"",
+      why:"K = exp(10 000/(8.314 × 298.15)) = e<sup>4.034</sup> = <b>56.5</b>." },
+    { t:"mc", q:"For an endothermic reaction (ΔH° > 0), what happens to K when temperature increases?",
+      o:["K increases","K decreases","K stays the same","K becomes negative"], a:0,
+      why:"Treat heat as a reactant. Adding heat pushes the reaction toward products, so K increases." },
+    { t:"mc", q:"What is the conjugate base of H<sub>2</sub>PO<sub>4</sub><sup>−</sup>?",
+      o:["H<sub>3</sub>PO<sub>4</sub>","HPO<sub>4</sub><sup>2−</sup>","PO<sub>4</sub><sup>3−</sup>","OH<sup>−</sup>"], a:1,
+      why:"A conjugate base has one fewer H<sup>+</sup>: H<sub>2</sub>PO<sub>4</sub><sup>−</sup> → <b>HPO<sub>4</sub><sup>2−</sup></b> + H<sup>+</sup>." },
+    { t:"num", q:"At 25 °C a solution has [OH<sup>−</sup>] = 2.5 × 10<sup>−4</sup> M. What is its pH?",
+      a:10.40, tol:0.01, show:"10.40", unit:"",
+      why:"pOH = −log(2.5 × 10<sup>−4</sup>) = 3.60, so pH = 14.00 − 3.60 = <b>10.40</b>." },
+    { t:"mc", q:"For a reaction mixture, Q = 5.0 × 10<sup>3</sup> and K = 2.0 × 10<sup>2</sup>. Which way will the reaction go?",
+      o:["Forward, toward products","Backward, toward reactants","It is already at equilibrium","Cannot tell without ΔH"], a:1,
+      why:"Q > K means there are too many products for equilibrium, so the reaction runs in reverse until Q = K." },
+    { t:"num", q:"K<sub>a</sub> of acetic acid is 1.75 × 10<sup>−5</sup>. What is K<sub>b</sub> for acetate at 25 °C?",
+      a:5.71e-10, rel:0.02, show:"5.71 × 10⁻¹⁰", unit:"",
+      why:"K<sub>b</sub> = K<sub>w</sub>/K<sub>a</sub> = 1.0 × 10<sup>−14</sup>/1.75 × 10<sup>−5</sup> = <b>5.71 × 10<sup>−10</sup></b>." }
+  ]
+},
+{
+  n: 7, title: "Let the Titrations Begin",
+  ideas: [
+    "In a titration, <b>titrant</b> is added to the <b>analyte</b> until the reaction is complete. The <b>equivalence point</b> is where the stoichiometric amount has been added; the <b>end point</b> is where you see a change. Their difference is the titration error.",
+    "A <b>blank titration</b> (without analyte) measures titrant consumed by everything else, including the indicator.",
+    "A <b>primary standard</b> is pure, stable, not hygroscopic and of known composition. Titrant is <b>standardized</b> against one.",
+    "<b>Direct</b> titration adds titrant to analyte. <b>Back</b> titration adds a known excess of reagent, then titrates what is left over. <b>Displacement</b> titration measures a species released by the analyte.",
+    "Precipitation titration curves plot pX (or pAg) against volume. The break at V<sub>e</sub> is sharper for smaller K<sub>sp</sub> and higher concentrations.",
+    "In a mixture, the less soluble precipitate forms first, so I<sup>−</sup> is titrated before Cl<sup>−</sup> with Ag<sup>+</sup>.",
+    "End-point methods for Ag<sup>+</sup> titrations: <b>Volhard</b> (back-titrate excess Ag<sup>+</sup> with SCN<sup>−</sup> using Fe<sup>3+</sup> as indicator), <b>Fajans</b> (adsorption indicators) and <b>Mohr</b> (CrO<sub>4</sub><sup>2−</sup> forms red Ag<sub>2</sub>CrO<sub>4</sub>)."
+  ],
+  eqs: [
+    ["mol titrant at V_e × (stoichiometric ratio) = mol analyte", ""],
+    ["pAg at V_e = ½ pK_sp", "For a 1:1 salt such as AgI"]
+  ],
+  qs: [
+    { t:"mc", q:"What is the difference between the equivalence point and the end point?",
+      o:["They are always identical","Equivalence is the theoretical stoichiometric point; end point is the observed signal change","End point is calculated; equivalence point is observed","Equivalence point only exists for acid–base titrations"], a:1,
+      why:"The equivalence point is ideal stoichiometry. The end point is what the indicator or instrument shows. A good method keeps them very close together." },
+    { t:"mc", q:"Which property is <b>not</b> wanted in a primary standard?",
+      o:["High purity","Stability in air","Hygroscopic (absorbs water)","Known composition"], a:2,
+      why:"A hygroscopic solid changes mass as it absorbs water, so you can't weigh a known amount reliably." },
+    { t:"num", q:"25.00 mL of a chloride solution needs 31.25 mL of 0.1000 M AgNO<sub>3</sub> to reach the end point. What is [Cl<sup>−</sup>]?",
+      a:0.1250, tol:0.0005, show:"0.1250 M", unit:"M",
+      why:"mol Ag<sup>+</sup> = 0.03125 L × 0.1000 M = 3.125 mmol = mol Cl<sup>−</sup>. [Cl<sup>−</sup>] = 3.125/25.00 = <b>0.1250 M</b>." },
+    { t:"num", q:"Volhard back titration: 50.00 mL of 0.1000 M AgNO<sub>3</sub> is added to a 0.2500 g sample. The excess Ag<sup>+</sup> needs 12.40 mL of 0.0800 M KSCN. What is the wt% Cl (35.453)?",
+      a:56.84, tol:0.1, show:"56.84 %", unit:"wt %",
+      why:"Ag<sup>+</sup> added = 5.000 mmol; excess = 12.40 × 0.0800 = 0.992 mmol. Cl<sup>−</sup> = 4.008 mmol = 142.1 mg. 142.1/250.0 = <b>56.84%</b>." },
+    { t:"num", q:"I<sup>−</sup> is titrated with Ag<sup>+</sup>. With K<sub>sp</sub>(AgI) = 8.3 × 10<sup>−17</sup>, what is pAg at the equivalence point?",
+      a:8.04, tol:0.02, show:"8.04", unit:"",
+      why:"At V<sub>e</sub>, [Ag<sup>+</sup>] = [I<sup>−</sup>] = √K<sub>sp</sub> = 9.1 × 10<sup>−9</sup> M. pAg = ½ × 16.08 = <b>8.04</b>." },
+    { t:"mc", q:"In the Volhard method, what produces the end-point color?",
+      o:["Red Ag<sub>2</sub>CrO<sub>4</sub>","Red FeSCN<sup>2+</sup> formed once Ag<sup>+</sup> is used up","Pink phenolphthalein","An adsorbed fluorescein dye"], a:1,
+      why:"After all the Ag<sup>+</sup> has precipitated as AgSCN, the next drop of SCN<sup>−</sup> binds Fe<sup>3+</sup> to form red FeSCN<sup>2+</sup>. For Cl<sup>−</sup>, filter off AgCl first, because AgCl is more soluble than AgSCN." },
+    { t:"mc", q:"A mixture of I<sup>−</sup> and Cl<sup>−</sup> is titrated with Ag<sup>+</sup>. What happens?",
+      o:["AgCl precipitates first","AgI precipitates first because it is far less soluble","Both precipitate together in a 1:1 ratio","Neither precipitates until V<sub>e</sub>"], a:1,
+      why:"AgI (K<sub>sp</sub> ≈ 10<sup>−16</sup>) is much less soluble than AgCl (≈ 10<sup>−10</sup>). I<sup>−</sup> precipitates first, giving two breaks in the curve." },
+    { t:"mc", q:"Why run a blank titration?",
+      o:["To standardize the titrant","To correct for titrant used by things other than the analyte, such as the indicator","To find K<sub>sp</sub>","To calibrate the buret"], a:1,
+      why:"Subtract the blank volume from each titration volume to remove contributions that don't come from the analyte." },
+    { t:"mc", q:"How does a Fajans adsorption indicator signal the end point?",
+      o:["It precipitates with the titrant","It changes color when it adsorbs on the precipitate, whose surface charge flips at V<sub>e</sub>","It oxidizes the analyte","It is a pH indicator"], a:1,
+      why:"Before V<sub>e</sub> the precipitate carries excess anion, so its surface is negative. Past V<sub>e</sub> excess Ag<sup>+</sup> makes it positive, the anionic dye adsorbs, and the color changes." }
+  ]
+},
+{
+  n: 8, title: "Activity and the Systematic Treatment of Equilibrium",
+  ideas: [
+    "Ions are surrounded by an <b>ionic atmosphere</b> of opposite charge, which weakens their attraction. Raising the ionic strength therefore <i>increases</i> the solubility of slightly soluble salts.",
+    "<b>Ionic strength</b> μ = ½ Σ c<sub>i</sub>z<sub>i</sub><sup>2</sup> counts every ion, weighted by the square of its charge.",
+    "<b>Activity</b> A = γ[C]. Equilibrium constants are written with activities. As μ increases, γ falls below 1, and it falls faster for higher charge and for smaller hydrated radius. For neutral molecules γ ≈ 1.",
+    "The true definition of pH uses activity: pH = −log A<sub>H<sup>+</sup></sub>.",
+    "<b>Systematic treatment</b>: write all reactions; write the charge balance and mass balances; write each equilibrium expression; check that you have as many equations as unknowns; solve."
+  ],
+  eqs: [
+    ["μ = ½ Σ cᵢ zᵢ²", ""],
+    ["log γ = −0.51 z² √μ / (1 + α√μ / 305)", "Extended Debye–Hückel, 25 °C, α in pm"],
+    ["Σ (positive charge × [cation]) = Σ (negative charge × [anion])", "Charge balance"]
+  ],
+  qs: [
+    { t:"num", q:"What is the ionic strength of 0.010 M Na<sub>2</sub>SO<sub>4</sub>?",
+      a:0.030, tol:0.0005, show:"0.030 M", unit:"M",
+      why:"μ = ½[(0.020)(1)<sup>2</sup> + (0.010)(2)<sup>2</sup>] = ½(0.060) = <b>0.030 M</b>." },
+    { t:"num", q:"What is the ionic strength of a solution that is 0.020 M MgCl<sub>2</sub> and 0.010 M KNO<sub>3</sub>?",
+      a:0.070, tol:0.0005, show:"0.070 M", unit:"M",
+      why:"MgCl<sub>2</sub>: ½[(0.020)(4) + (0.040)(1)] = 0.060. KNO<sub>3</sub>: ½[(0.010) + (0.010)] = 0.010. Total = <b>0.070 M</b>." },
+    { t:"mc", q:"Adding inert KNO<sub>3</sub> to a saturated solution of slightly soluble BaSO<sub>4</sub> will…",
+      o:["Decrease its solubility (common ion effect)","Increase its solubility","Not change its solubility","Convert it to Ba(NO<sub>3</sub>)<sub>2</sub> precipitate"], a:1,
+      why:"Higher ionic strength lowers the activity coefficients of Ba<sup>2+</sup> and SO<sub>4</sub><sup>2−</sup>, so their concentrations must rise to satisfy K<sub>sp</sub>. More solid dissolves. No common ion is present." },
+    { t:"mc", q:"At the same ionic strength, which ion has the <b>smallest</b> activity coefficient?",
+      o:["Na<sup>+</sup>","Cl<sup>−</sup>","Mg<sup>2+</sup>","Al<sup>3+</sup>"], a:3,
+      why:"log γ depends on z<sup>2</sup>, so highly charged ions are affected most. Al<sup>3+</sup> (z<sup>2</sup> = 9) has the smallest γ." },
+    { t:"num", q:"Use extended Debye–Hückel to find γ for a +2 ion with hydrated diameter α = 600 pm at μ = 0.010 M.",
+      a:0.6755, tol:0.005, show:"0.675", unit:"",
+      why:"log γ = −0.51(4)(0.100)/(1 + 600 × 0.100/305) = −0.204/1.197 = −0.1705. γ = 10<sup>−0.1705</sup> = <b>0.675</b>." },
+    { t:"num", q:"Find the solubility of AgCl (K<sub>sp</sub> = 1.8 × 10<sup>−10</sup>) in 0.10 M KNO<sub>3</sub>, where γ<sub>Ag<sup>+</sup></sub> ≈ γ<sub>Cl<sup>−</sup></sub> ≈ 0.75.",
+      a:1.79e-5, rel:0.03, show:"1.8 × 10⁻⁵ M", unit:"M",
+      why:"K<sub>sp</sub> = γ<sup>2</sup>s<sup>2</sup>, so s = √K<sub>sp</sub>/γ = 1.34 × 10<sup>−5</sup>/0.75 = <b>1.8 × 10<sup>−5</sup> M</b>, about 33% higher than when activity is ignored." },
+    { t:"mc", q:"Which is the correct charge balance for CaCl<sub>2</sub> dissolved in water?",
+      o:["[Ca<sup>2+</sup>] + [H<sup>+</sup>] = [Cl<sup>−</sup>] + [OH<sup>−</sup>]","2[Ca<sup>2+</sup>] + [H<sup>+</sup>] = [Cl<sup>−</sup>] + [OH<sup>−</sup>]","[Ca<sup>2+</sup>] = 2[Cl<sup>−</sup>]","2[Ca<sup>2+</sup>] = [Cl<sup>−</sup>]"], a:1,
+      why:"Each concentration is multiplied by the magnitude of its charge, and every ion counts, including H<sup>+</sup> and OH<sup>−</sup> from water." },
+    { t:"mc", q:"Which is the mass balance for 0.050 F acetic acid (HA) in water?",
+      o:["[HA] = 0.050","[H<sup>+</sup>] = [A<sup>−</sup>]","[HA] + [A<sup>−</sup>] = 0.050","[HA] + [A<sup>−</sup>] + [H<sup>+</sup>] = 0.050"], a:2,
+      why:"All acetate-containing species add up to the formal concentration." },
+    { t:"mc", q:"Strictly, pH is defined as…",
+      o:["−log[H<sup>+</sup>]","−log A<sub>H<sup>+</sup></sub> = −log(γ<sub>H<sup>+</sup></sub>[H<sup>+</sup>])","14 − pOH at any temperature","log[OH<sup>−</sup>]"], a:1,
+      why:"A pH electrode responds to the activity of H<sup>+</sup>, not to its concentration. At low ionic strength the two are nearly equal." }
+  ]
+},
+{
+  n: 9, title: "Monoprotic Acid-Base Equilibria",
+  ideas: [
+    "For a strong acid or base above ~10<sup>−6</sup> M, [H<sup>+</sup>] or [OH<sup>−</sup>] equals the formal concentration. Near 10<sup>−7</sup> M you must also include H<sup>+</sup> from water.",
+    "Weak acid HA: K<sub>a</sub> = x<sup>2</sup>/(F − x), where x = [H<sup>+</sup>] = [A<sup>−</sup>]. The fraction of dissociation α = x/F increases as the acid is diluted.",
+    "Weak base B: K<sub>b</sub> = x<sup>2</sup>/(F − x), where x = [OH<sup>−</sup>] = [BH<sup>+</sup>].",
+    "A <b>buffer</b> is a mixture of a weak acid and its conjugate base. Its pH follows the Henderson–Hasselbalch equation and resists change when acid, base or water is added.",
+    "<b>Buffer capacity</b> is greatest when pH = pK<sub>a</sub>. Choose a buffer whose pK<sub>a</sub> is within about ±1 of the target pH."
+  ],
+  eqs: [
+    ["x = [−K_a + √(K_a² + 4K_a·F)] / 2", "Exact weak-acid solution of x²/(F − x) = K_a"],
+    ["pH = pK_a + log([A⁻]/[HA])", "Henderson–Hasselbalch"],
+    ["α = [A⁻]/F", "Fraction of dissociation"]
+  ],
+  qs: [
+    { t:"num", q:"What is the pH of 0.0050 M HCl?",
+      a:2.30, tol:0.01, show:"2.30", unit:"",
+      why:"Strong acid: [H<sup>+</sup>] = 0.0050 M. pH = −log(0.0050) = <b>2.30</b>." },
+    { t:"num", q:"What is the pH of 1.0 × 10<sup>−8</sup> M HCl? (Include water ionization.)",
+      a:6.98, tol:0.01, show:"6.98", unit:"",
+      why:"Charge balance [H<sup>+</sup>] = 10<sup>−8</sup> + K<sub>w</sub>/[H<sup>+</sup>] gives [H<sup>+</sup>] = 1.05 × 10<sup>−7</sup> M, so pH = <b>6.98</b>. Adding acid can't make the solution basic, so 8.00 is wrong." },
+    { t:"num", q:"What is the pH of 0.100 M acetic acid (K<sub>a</sub> = 1.75 × 10<sup>−5</sup>)?",
+      a:2.88, tol:0.01, show:"2.88", unit:"",
+      why:"x<sup>2</sup>/(0.100 − x) = 1.75 × 10<sup>−5</sup> gives x = 1.31 × 10<sup>−3</sup> M, so pH = <b>2.88</b>." },
+    { t:"num", q:"What percent of the acetic acid in 0.100 M solution is dissociated? (x = 1.31 × 10<sup>−3</sup> M)",
+      a:1.31, tol:0.05, show:"1.31 %", unit:"%",
+      why:"α = x/F = 1.31 × 10<sup>−3</sup>/0.100 = <b>1.31%</b>. At 0.0010 M it would be about 12%, so a weak acid dissociates more when diluted." },
+    { t:"num", q:"What is the pH of 0.050 M NH<sub>3</sub> (K<sub>b</sub> = 1.76 × 10<sup>−5</sup>)?",
+      a:10.97, tol:0.01, show:"10.97", unit:"",
+      why:"x<sup>2</sup>/(0.050 − x) = 1.76 × 10<sup>−5</sup> gives x = [OH<sup>−</sup>] = 9.29 × 10<sup>−4</sup> M. pOH = 3.03, so pH = <b>10.97</b>." },
+    { t:"num", q:"A 1.00 L buffer contains 0.100 mol acetic acid and 0.150 mol sodium acetate (pK<sub>a</sub> = 4.76). What is its pH?",
+      a:4.936, tol:0.01, show:"4.94", unit:"",
+      why:"pH = 4.76 + log(0.150/0.100) = 4.76 + 0.176 = <b>4.94</b>." },
+    { t:"num", q:"0.025 mol HCl is added to that buffer (0.100 mol HA, 0.150 mol A<sup>−</sup>). What is the new pH?",
+      a:4.76, tol:0.01, show:"4.76", unit:"",
+      why:"H<sup>+</sup> converts A<sup>−</sup> to HA: A<sup>−</sup> = 0.125 mol and HA = 0.125 mol. The ratio is 1, so pH = pK<sub>a</sub> = <b>4.76</b>. The same HCl in pure water would give pH 1.60." },
+    { t:"mc", q:"At what pH does an acetic acid/acetate buffer (pK<sub>a</sub> 4.76) have maximum buffer capacity?",
+      o:["3.76","4.76","5.76","7.00"], a:1,
+      why:"Buffer capacity peaks when [HA] = [A<sup>−</sup>], which is when pH = pK<sub>a</sub>." },
+    { t:"mc", q:"You need a buffer at pH 9.2. Which acid is the best choice?",
+      o:["Acetic acid, pK<sub>a</sub> 4.76","H<sub>2</sub>PO<sub>4</sub><sup>−</sup>, pK<sub>a</sub> 7.20","NH<sub>4</sub><sup>+</sup>, pK<sub>a</sub> 9.24","HCO<sub>3</sub><sup>−</sup>, pK<sub>a</sub> 10.33"], a:2,
+      why:"Choose the pK<sub>a</sub> closest to the target pH. NH<sub>4</sub><sup>+</sup>/NH<sub>3</sub> (9.24) works with a ratio near 1." },
+    { t:"mc", q:"Diluting a buffer 10-fold with water (keeping it reasonably concentrated) will…",
+      o:["Change the pH by 1 unit","Leave the pH nearly unchanged but lower the buffer capacity","Raise the buffer capacity","Convert it to a strong acid"], a:1,
+      why:"The [A<sup>−</sup>]/[HA] ratio doesn't change, so pH stays about the same. With fewer moles present, the buffer can absorb less added acid or base." }
+  ]
+},
+{
+  n: 10, title: "Polyprotic Acid-Base Equilibria",
+  ideas: [
+    "Diprotic acid H<sub>2</sub>A: treat it as a monoprotic acid using K<sub>a1</sub>, because the second dissociation is much smaller.",
+    "Intermediate form HA<sup>−</sup> is both an acid and a base: [H<sup>+</sup>] ≈ √[(K<sub>1</sub>K<sub>2</sub>F + K<sub>1</sub>K<sub>w</sub>)/(K<sub>1</sub> + F)], so pH ≈ ½(pK<sub>1</sub> + pK<sub>2</sub>).",
+    "Fully basic form A<sup>2−</sup>: treat it as a monoprotic base with K<sub>b1</sub> = K<sub>w</sub>/K<sub>a2</sub>.",
+    "Principal species: below pK<sub>1</sub>, H<sub>2</sub>A dominates; between pK<sub>1</sub> and pK<sub>2</sub>, HA<sup>−</sup> dominates; above pK<sub>2</sub>, A<sup>2−</sup> dominates.",
+    "<b>Fractional composition</b> equations give the fraction of each form at any pH.",
+    "The <b>isoelectric pH</b> is where the average charge is zero. The <b>isoionic pH</b> is the pH reached when the pure neutral polyprotic species dissolves in water."
+  ],
+  eqs: [
+    ["pH ≈ ½(pK₁ + pK₂)", "Intermediate form HA⁻"],
+    ["α_HA = [H⁺]/([H⁺] + K_a),   α_A⁻ = K_a/([H⁺] + K_a)", "Monoprotic fractions"],
+    ["α_H₂A = [H⁺]²/D,   α_HA⁻ = K₁[H⁺]/D,   α_A²⁻ = K₁K₂/D", "D = [H⁺]² + K₁[H⁺] + K₁K₂"]
+  ],
+  qs: [
+    { t:"num", q:"Estimate the pH of 0.10 M NaHCO<sub>3</sub>. (Carbonic acid: pK<sub>1</sub> = 6.35, pK<sub>2</sub> = 10.33.)",
+      a:8.34, tol:0.01, show:"8.34", unit:"",
+      why:"HCO<sub>3</sub><sup>−</sup> is the intermediate form: pH ≈ ½(6.35 + 10.33) = <b>8.34</b>." },
+    { t:"mc", q:"Phosphoric acid has pK<sub>a</sub> values 2.15, 7.20 and 12.35. What is the principal species at pH 7.0?",
+      o:["H<sub>3</sub>PO<sub>4</sub>","H<sub>2</sub>PO<sub>4</sub><sup>−</sup>","HPO<sub>4</sub><sup>2−</sup>","PO<sub>4</sub><sup>3−</sup>"], a:1,
+      why:"pH 7.0 is between pK<sub>1</sub> and pK<sub>2</sub> and just below 7.20, so [HPO<sub>4</sub><sup>2−</sup>]/[H<sub>2</sub>PO<sub>4</sub><sup>−</sup>] = 10<sup>−0.20</sup> = 0.63. <b>H<sub>2</sub>PO<sub>4</sub><sup>−</sup></b> is slightly ahead." },
+    { t:"num", q:"In a phosphate buffer at pH 7.50, what is the ratio [HPO<sub>4</sub><sup>2−</sup>]/[H<sub>2</sub>PO<sub>4</sub><sup>−</sup>]? (pK<sub>2</sub> = 7.20)",
+      a:2.0, tol:0.05, show:"2.0", unit:"",
+      why:"Ratio = 10<sup>(pH − pK<sub>2</sub>)</sup> = 10<sup>0.30</sup> = <b>2.0</b>." },
+    { t:"num", q:"What mole ratio of Na<sub>2</sub>HPO<sub>4</sub> to NaH<sub>2</sub>PO<sub>4</sub> gives a pH 7.40 buffer? (pK<sub>2</sub> = 7.20)",
+      a:1.585, tol:0.02, show:"1.58", unit:"",
+      why:"Ratio = 10<sup>(7.40 − 7.20)</sup> = 10<sup>0.20</sup> = <b>1.58</b>." },
+    { t:"num", q:"For a monoprotic acid at pH = pK<sub>a</sub> + 1, what fraction is in the A<sup>−</sup> form?",
+      a:0.909, tol:0.003, show:"0.909", unit:"",
+      why:"α<sub>A<sup>−</sup></sub> = K<sub>a</sub>/([H<sup>+</sup>] + K<sub>a</sub>). With [H<sup>+</sup>] = K<sub>a</sub>/10, α = 1/(0.1 + 1) = <b>0.909</b>." },
+    { t:"num", q:"What is the pH of 0.050 M Na<sub>2</sub>CO<sub>3</sub>? (pK<sub>2</sub> of carbonic acid = 10.33)",
+      a:11.50, tol:0.02, show:"11.50", unit:"",
+      why:"CO<sub>3</sub><sup>2−</sup> is a base with K<sub>b1</sub> = 10<sup>−14</sup>/10<sup>−10.33</sup> = 2.14 × 10<sup>−4</sup>. Solving x<sup>2</sup>/(0.050 − x) = K<sub>b1</sub> gives x = 3.16 × 10<sup>−3</sup> M OH<sup>−</sup>, so pOH = 2.50 and pH = <b>11.50</b>." },
+    { t:"num", q:"Glycine has pK<sub>a</sub> values 2.35 (carboxyl) and 9.78 (ammonium). Estimate its isoelectric pH.",
+      a:6.065, tol:0.01, show:"6.06–6.07", unit:"",
+      why:"The isoelectric pH, where the neutral zwitterion dominates and average charge is zero, is ½(2.35 + 9.78) = <b>6.07</b>." },
+    { t:"mc", q:"Why can you usually ignore the second dissociation when finding the pH of a diprotic acid H<sub>2</sub>A?",
+      o:["Because K<sub>a2</sub> is usually much smaller than K<sub>a1</sub>, so HA<sup>−</sup> releases very little extra H<sup>+</sup>","Because HA<sup>−</sup> is a strong base","Because water suppresses K<sub>a1</sub>","Because diprotic acids are strong"], a:0,
+      why:"With K<sub>a2</sub> << K<sub>a1</sub>, the H<sup>+</sup> from HA<sup>−</sup> is negligible, and [A<sup>2−</sup>] ≈ K<sub>a2</sub>." },
+    { t:"mc", q:"What is the <b>isoionic</b> pH of a protein?",
+      o:["The pH where the average charge is zero","The pH obtained when pure, neutral protein is dissolved in water with no other ions","Always 7.00","The pH where the protein precipitates"], a:1,
+      why:"Isoionic pH is set only by the protein's own acid–base chemistry in water. Isoelectric pH is defined by zero average charge. The two are usually close but not identical." }
+  ]
+},
+{
+  n: 11, title: "Acid-Base Titrations",
+  ideas: [
+    "Strong acid with strong base: the pH at V<sub>e</sub> is 7.00 (25 °C) and the break is large.",
+    "Weak acid with strong base has four regions: the initial weak acid; the buffer region (Henderson–Hasselbalch), where pH = pK<sub>a</sub> at ½V<sub>e</sub>; V<sub>e</sub>, where the conjugate base makes pH > 7; and past V<sub>e</sub>, where excess OH<sup>−</sup> controls pH.",
+    "Weak base with strong acid is the mirror image: pH < 7 at V<sub>e</sub>.",
+    "Diprotic acids give two breaks when the pK<sub>a</sub> values are well separated.",
+    "Find the end point at the maximum of the first derivative (ΔpH/ΔV), the zero crossing of the second derivative, or with a <b>Gran plot</b>.",
+    "Choose an indicator whose color-change range includes the equivalence-point pH.",
+    "Primary standards: potassium hydrogen phthalate (KHP) for bases; tris or Na<sub>2</sub>CO<sub>3</sub> for acids. NaOH absorbs CO<sub>2</sub>, so standardize it often.",
+    "<b>Kjeldahl analysis</b> digests nitrogen to NH<sub>4</sub><sup>+</sup>, distills NH<sub>3</sub> into standard acid, and back-titrates the excess acid. The <b>leveling effect</b>: in water, no acid stronger than H<sub>3</sub>O<sup>+</sup> (and no base stronger than OH<sup>−</sup>) can exist."
+  ],
+  eqs: [
+    ["V_e · M_titrant = V_analyte · M_analyte", "1:1 stoichiometry"],
+    ["at V_e/2: pH = pK_a", "Weak acid titration"],
+    ["at V_e: [A⁻] = mol HA / V_total,  K_b = K_w/K_a", ""]
+  ],
+  qs: [
+    { t:"num", q:"40.00 mL of 0.100 M weak acid HA (pK<sub>a</sub> 4.76) is titrated with 0.200 M NaOH. What is the pH after 10.00 mL of base?",
+      a:4.76, tol:0.01, show:"4.76", unit:"",
+      why:"V<sub>e</sub> = (40.00)(0.100)/0.200 = 20.00 mL. At 10.00 mL you are at ½V<sub>e</sub>, where [HA] = [A<sup>−</sup>], so pH = pK<sub>a</sub> = <b>4.76</b>." },
+    { t:"num", q:"Same titration (40.00 mL of 0.100 M HA, pK<sub>a</sub> 4.76, with 0.200 M NaOH): what is the pH at the equivalence point (20.00 mL)?",
+      a:8.79, tol:0.02, show:"8.79", unit:"",
+      why:"[A<sup>−</sup>] = 4.00 mmol/60.00 mL = 0.0667 M. K<sub>b</sub> = 10<sup>−14</sup>/10<sup>−4.76</sup> = 5.75 × 10<sup>−10</sup>. [OH<sup>−</sup>] = √(K<sub>b</sub>·0.0667) = 6.19 × 10<sup>−6</sup> M. pOH = 5.21, so pH = <b>8.79</b>." },
+    { t:"num", q:"Same titration: what is the pH after 25.00 mL of 0.200 M NaOH?",
+      a:12.19, tol:0.01, show:"12.19", unit:"",
+      why:"Excess OH<sup>−</sup> = 5.00 mL × 0.200 M = 1.00 mmol in 65.00 mL, which is 0.0154 M. pOH = 1.81, so pH = <b>12.19</b>." },
+    { t:"num", q:"25.00 mL of 0.100 M HCl is mixed with 20.00 mL of 0.100 M NaOH. What is the pH?",
+      a:1.954, tol:0.01, show:"1.95", unit:"",
+      why:"Excess H<sup>+</sup> = 2.500 − 2.000 = 0.500 mmol in 45.00 mL, which is 0.0111 M. pH = <b>1.95</b>." },
+    { t:"mc", q:"The equivalence point of a weak acid/NaOH titration is at pH 8.8. Which indicator is best?",
+      o:["Methyl orange (3.1–4.4)","Bromocresol green (3.8–5.4)","Methyl red (4.8–6.0)","Phenolphthalein (8.0–9.6)"], a:3,
+      why:"The indicator's transition range must include the equivalence pH. Phenolphthalein turns pink between 8.0 and 9.6." },
+    { t:"mc", q:"Using derivatives of a titration curve, where is the end point?",
+      o:["Where the first derivative is zero","At the maximum of the first derivative (ΔpH/ΔV), where the second derivative crosses zero","At the first data point","Where pH = 7 regardless of system"], a:1,
+      why:"The steepest part of the curve marks the end point: the first derivative peaks there and the second derivative changes sign." },
+    { t:"num", q:"0.8168 g of KHP (FM 204.22) needs 40.00 mL of NaOH to reach the end point. What is the NaOH molarity?",
+      a:0.1000, tol:0.0002, show:"0.1000 M", unit:"M",
+      why:"mol KHP = 0.8168/204.22 = 3.9996 mmol, which reacts 1:1 with OH<sup>−</sup>. 3.9996 mmol/40.00 mL = <b>0.1000 M</b>." },
+    { t:"num", q:"Kjeldahl: NH<sub>3</sub> from 0.500 g of food is distilled into 50.00 mL of 0.1000 M HCl. Back-titrating the excess HCl takes 20.00 mL of 0.1000 M NaOH. What is the wt% N (14.007)?",
+      a:8.404, tol:0.02, show:"8.40 %", unit:"wt %",
+      why:"HCl = 5.000 mmol, of which 2.000 mmol was left over, so NH<sub>3</sub> = 3.000 mmol = 42.02 mg N. 42.02/500.0 = <b>8.40%</b> N, which corresponds to about 52.5% protein using the common factor 6.25." },
+    { t:"mc", q:"HClO<sub>4</sub> and HCl seem equally strong in water. Why?",
+      o:["They have identical K<sub>a</sub> values","Both react completely with water to form H<sub>3</sub>O<sup>+</sup>, the strongest acid that can exist in water (leveling effect)","Water is a strong acid","Perchlorate is a strong base"], a:1,
+      why:"Water levels both to H<sub>3</sub>O<sup>+</sup>. In a less basic solvent such as acetic acid, you can see that HClO<sub>4</sub> is stronger." },
+    { t:"mc", q:"Compared with the titration of a stronger or more concentrated acid, the break at V<sub>e</sub> for a weak, dilute acid is…",
+      o:["Larger","Smaller and harder to detect","Identical","Shifted to pH 7"], a:1,
+      why:"As K<sub>a</sub> or concentration decreases, the pH jump at V<sub>e</sub> shrinks, making the end point less distinct." }
+  ]
+},
+{
+  n: 12, title: "EDTA Titrations",
+  ideas: [
+    "A <b>chelating</b> (multidentate) ligand binds a metal through several atoms. The <b>chelate effect</b>, the extra stability over equivalent monodentate ligands, is largely an entropy effect.",
+    "EDTA is hexaprotic (H<sub>6</sub>Y<sup>2+</sup>; pK<sub>a</sub> ≈ 0.0, 1.5, 2.00, 2.69, 6.13, 10.37) and forms 1:1 complexes with nearly every metal ion, whatever the metal's charge.",
+    "Only the fraction α<sub>Y<sup>4−</sup></sub> is fully deprotonated, and it depends on pH (≈ 0.30 at pH 10). The <b>conditional formation constant</b> is K′<sub>f</sub> = α<sub>Y<sup>4−</sup></sub>·K<sub>f</sub>.",
+    "Titration curve: before V<sub>e</sub>, unreacted M sets pM; at V<sub>e</sub>, M comes from dissociation of MY; after V<sub>e</sub>, [M] = [MY]/(K′<sub>f</sub>[EDTA]).",
+    "<b>Auxiliary complexing agents</b> (NH<sub>3</sub>, tartrate, citrate) bind the metal weakly enough to keep it from precipitating as hydroxide while still letting EDTA take it.",
+    "<b>Metal ion indicators</b> (Eriochrome black T, Calmagite) change color when EDTA takes the metal from them. They must bind the metal less strongly than EDTA does.",
+    "Techniques: direct, back, displacement and indirect titration, plus <b>masking</b>. Water hardness is total Ca<sup>2+</sup> + Mg<sup>2+</sup>, reported as mg CaCO<sub>3</sub>/L."
+  ],
+  eqs: [
+    ["M + Y⁴⁻ ⇌ MY,   K_f = [MY]/([M][Y⁴⁻])", ""],
+    ["K′_f = α_Y⁴⁻ · K_f = [MY]/([M][EDTA])", "[EDTA] = all free EDTA forms"],
+    ["after V_e: [M] = [MY] / (K′_f · [EDTA])", ""]
+  ],
+  qs: [
+    { t:"mc", q:"What is the stoichiometry of EDTA binding to Fe<sup>3+</sup>, Ca<sup>2+</sup> or Na<sup>+</sup>?",
+      o:["Depends on the metal charge","Always 1:1","Always 2:1 (EDTA:metal)","1:2"], a:1,
+      why:"EDTA wraps around a single metal ion using up to six donor atoms, so complexes are 1:1 regardless of metal charge." },
+    { t:"mc", q:"What mainly explains the chelate effect?",
+      o:["Chelates have stronger metal–ligand bonds","Binding one multidentate ligand frees several monodentate ligands or water molecules, a favorable entropy change","Chelates are always neutral","Chelates absorb light"], a:1,
+      why:"Replacing several bound waters with one multidentate ligand increases the number of free particles, so ΔS is positive and the complex is more stable." },
+    { t:"num", q:"log K<sub>f</sub> for CaY<sup>2−</sup> is 10.65 and α<sub>Y<sup>4−</sup></sub> = 0.30 at pH 10. What is log K′<sub>f</sub>?",
+      a:10.13, tol:0.01, show:"10.13", unit:"",
+      why:"log K′<sub>f</sub> = 10.65 + log(0.30) = 10.65 − 0.52 = <b>10.13</b>, so K′<sub>f</sub> = 1.34 × 10<sup>10</sup>." },
+    { t:"num", q:"50.00 mL of 0.0400 M Ca<sup>2+</sup> (pH 10, K′<sub>f</sub> = 1.34 × 10<sup>10</sup>) is titrated with 0.0800 M EDTA. What is pCa after 10.00 mL?",
+      a:1.70, tol:0.01, show:"1.70", unit:"",
+      why:"V<sub>e</sub> = 25.00 mL. 15/25 of the Ca<sup>2+</sup> remains: 0.600 × 2.000 mmol = 1.200 mmol in 60.00 mL, which is 0.0200 M. pCa = <b>1.70</b>." },
+    { t:"num", q:"Same titration (50.00 mL of 0.0400 M Ca<sup>2+</sup>, 0.0800 M EDTA, K′<sub>f</sub> = 1.34 × 10<sup>10</sup>): what is pCa at the equivalence point?",
+      a:5.85, tol:0.02, show:"5.85", unit:"",
+      why:"[CaY] = 2.000 mmol/75.00 mL = 0.0267 M. With x = [Ca] = [EDTA]: 0.0267/x<sup>2</sup> = 1.34 × 10<sup>10</sup>, so x = 1.41 × 10<sup>−6</sup> M and pCa = <b>5.85</b>." },
+    { t:"num", q:"Same titration: what is pCa after 30.00 mL of EDTA?",
+      a:9.43, tol:0.02, show:"9.43", unit:"",
+      why:"Excess EDTA = 5.00 mL × 0.0800 = 0.400 mmol in 80.00 mL, which is 0.00500 M. [CaY] = 2.000/80.00 = 0.0250 M. [Ca] = 0.0250/(1.34 × 10<sup>10</sup> × 0.00500) = 3.7 × 10<sup>−10</sup> M, so pCa = <b>9.43</b>." },
+    { t:"num", q:"A 50.00 mL water sample needs 12.50 mL of 0.01000 M EDTA to titrate Ca<sup>2+</sup> + Mg<sup>2+</sup>. Express the hardness as mg CaCO<sub>3</sub> (100.09 g/mol) per liter.",
+      a:250.2, tol:1.0, show:"250 mg/L", unit:"mg/L",
+      why:"mol M<sup>2+</sup> = 0.1250 mmol in 50.00 mL, which is 2.50 × 10<sup>−3</sup> M. × 100.09 g/mol = 0.250 g/L = <b>250 mg CaCO<sub>3</sub>/L</b>, which counts as hard water." },
+    { t:"mc", q:"Why is ammonia added when Zn<sup>2+</sup> is titrated with EDTA at pH 10?",
+      o:["To lower the pH","As an auxiliary complexing agent that keeps Zn<sup>2+</sup> from precipitating as Zn(OH)<sub>2</sub> but still lets EDTA take it","To act as the indicator","To mask Zn<sup>2+</sup> completely"], a:1,
+      why:"NH<sub>3</sub> forms Zn(NH<sub>3</sub>)<sub>4</sub><sup>2+</sup>, which is soluble at pH 10 but much weaker than ZnY<sup>2−</sup>, so the titration still works." },
+    { t:"mc", q:"Which requirement must a metal ion indicator meet?",
+      o:["It must bind the metal more strongly than EDTA","It must bind the metal less strongly than EDTA, and its free and metal-bound forms must have different colors","It must be colorless","It must precipitate the metal"], a:1,
+      why:"At the end point EDTA must pull the metal from the indicator, which releases the free indicator's color. If the indicator binds more strongly, it is <b>blocked</b> and no color change occurs." },
+    { t:"mc", q:"When would you use a <b>back titration</b> with EDTA?",
+      o:["When the analyte precipitates without EDTA, reacts too slowly, or blocks the indicator","Only when the metal is Ca<sup>2+</sup>","When no indicator is needed","When K′<sub>f</sub> is very large"], a:0,
+      why:"Add a known excess of EDTA so the metal is fully complexed, then titrate the leftover EDTA with a second metal ion such as Mg<sup>2+</sup> or Zn<sup>2+</sup>." },
+    { t:"mc", q:"Lowering the pH of an EDTA titration from 10 to 6 generally makes the end point…",
+      o:["Sharper, because α<sub>Y<sup>4−</sup></sub> rises","Less sharp, because α<sub>Y<sup>4−</sup></sub> and K′<sub>f</sub> fall","Unchanged","Disappear for every metal"], a:1,
+      why:"At lower pH, EDTA is more protonated, so less Y<sup>4−</sup> is available and K′<sub>f</sub> shrinks. Metals with very large K<sub>f</sub> (such as Fe<sup>3+</sup>) can still be titrated at low pH." }
+  ]
+}
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const KEY = "quant-review-v1";
+let store = {};
+try { store = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { store = {}; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
+function rec(ch, i) { return (store[ch] || {})[i]; }
+function setRec(ch, i, r) { (store[ch] = store[ch] || {})[i] = r; save(); }
+
+let mixed = null;          // {items:[{ch,i}], recs:{}}
+let mixSel = new Set(CH.map(c => c.n));
+let pendingReset = null;
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+function chStats(c) {
+  const r = store[c.n] || {}; let ok = 0, done = 0;
+  c.qs.forEach((_, i) => { if (r[i]) { done++; if (r[i].c) ok++; } });
+  return { ok, done, total: c.qs.length };
+}
+function allStats() {
+  return CH.reduce((a, c) => { const s = chStats(c); a.ok += s.ok; a.done += s.done; a.total += s.total; return a; }, { ok:0, done:0, total:0 });
+}
+
+/* ============================================================
+   NUMBERS
+   ============================================================ */
+const SUP = { "⁰":"0","¹":"1","²":"2","³":"3","⁴":"4","⁵":"5","⁶":"6","⁷":"7","⁸":"8","⁹":"9","⁻":"-","⁺":"" };
+function parseNum(raw) {
+  let s = String(raw).trim();
+  if (!s) return NaN;
+  s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]/g, ch => SUP[ch]);
+  s = s.replace(/[−–—]/g, "-").replace(/,/g, "").replace(/\s+/g, "");
+  s = s.replace(/^[±+]/, "");
+  s = s.replace(/[x×*·]10\^?/i, "e").replace(/^10\^/, "1e");
+  s = s.replace(/^(-?[\d.]+(?:e[-+]?\d+)?).*$/i, "$1");
+  const v = Number(s);
+  return Number.isFinite(v) ? v : NaN;
+}
+function numOK(q, v) {
+  const tol = q.rel != null ? Math.abs(q.a) * q.rel : (q.tol != null ? q.tol : Math.abs(q.a) * 0.01);
+  return Math.abs(v - q.a) <= tol + 1e-12;
+}
+
+/* ============================================================
+   RENDERING
+   ============================================================ */
+function buret(ok, done, total, small) {
+  const pOk = total ? (ok / total) * 100 : 0, pDone = total ? (done / total) * 100 : 0;
+  return `<div class="buret">
+    <div class="buret-tube" role="img" aria-label="${ok} of ${total} correct, ${done} answered">
+      <div class="buret-ans" style="width:${pDone}%"></div><div class="buret-fill" style="width:${pOk}%"></div>
+    </div>
+    ${small ? "" : `<div class="buret-legend"><span><span class="mono">${ok}</span> correct · <span class="mono">${done}</span> of <span class="mono">${total}</span> answered</span><span>${done ? `<span class="mono">${Math.round(ok / done * 100)}%</span> accuracy so far` : "Not started"}</span></div>`}
+  </div>`;
+}
+
+function renderNav(active) {
+  $("#chlist").innerHTML = CH.map(c => {
+    const s = chStats(c);
+    return `<li><a class="chlink" href="#ch${c.n}" ${active === c.n ? 'aria-current="page"' : ""}>
+      <span class="n">${c.n}</span><span class="t">${c.title}</span>
+      <span class="sc ${s.ok === s.total ? "full" : ""}">${s.done ? `${s.ok}/${s.total}` : "–"}</span></a></li>`;
+  }).join("");
+}
+
+function qCard(q, idx, r, key) {
+  const kind = q.t === "mc" ? "Multiple choice" : "Calculation";
+  let body = "";
+  if (q.t === "mc") {
+    body = `<div class="opts">` + q.o.map((o, j) => {
+      let cls = "";
+      if (r) { if (j === q.a) cls = "right"; else if (j === r.r) cls = "wrong"; }
+      return `<button type="button" class="opt ${cls}" data-key="${key}" data-opt="${j}" ${r ? "disabled" : ""}>
+        <span class="k">${"ABCDEFG"[j]}</span><span>${o}</span></button>`;
+    }).join("") + `</div>`;
+  } else {
+    body = `<form class="num" data-key="${key}" novalidate>
+        <input id="in-${key}" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"
+          aria-label="Your answer" placeholder="e.g. 2.19 or 1.5e-4" ${r ? `value="${esc(r.r)}" disabled` : ""}>
+        ${q.unit ? `<span class="unit">${q.unit}</span>` : ""}
+        ${r ? "" : `<button class="btn" type="submit">Check</button>`}
+      </form>
+      ${r ? "" : `<div class="err" id="err-${key}" hidden></div>`}`;
+  }
+  let fb = "";
+  if (r) {
+    const ans = q.t === "mc" ? `${"ABCDEFG"[q.a]}` : esc(q.show);
+    fb = `<div class="fb ${r.c ? "ok" : "bad"}" role="status">
+      <div class="verdict">${r.c ? "Correct" : `Not quite. Answer: ${ans}`}</div>
+      <div class="why">${q.why}</div></div>`;
+  }
+  return `<article class="q ${r ? (r.c ? "is-ok" : "is-bad") : ""}" id="q-${key}">
+    <div class="q-top"><span>Q${idx + 1}</span><span class="q-kind">${kind}</span></div>
+    <div class="q-text">${q.q}</div>${body}${fb}</article>`;
+}
+
+function notes(c) {
+  return `<details class="notes" open>
+    <summary>Key ideas</summary>
+    <div class="notes-body">
+      <ul>${c.ideas.map(i => `<li>${i}</li>`).join("")}</ul>
+      ${c.eqs.length ? `<div class="eqs"><h3>Key relationships</h3>${c.eqs.map(([e, s]) => `<div class="eq"><span>${e}</span>${s ? `<small>${s}</small>` : ""}</div>`).join("")}</div>` : ""}
+    </div></details>`;
+}
+
+function renderChapter(n) {
+  const c = CH.find(x => x.n === n);
+  const s = chStats(c);
+  const prev = CH.find(x => x.n === n - 1), next = CH.find(x => x.n === n + 1);
+  const resetUI = pendingReset === n
+    ? `<span class="confirm">Clear your ${s.done} answers here?
+         <button class="btn primary" type="button" data-act="reset-yes">Clear answers</button>
+         <button class="btn quiet" type="button" data-act="reset-no">Keep them</button></span>`
+    : `<button class="btn quiet" type="button" data-act="reset" ${s.done ? "" : "disabled"}>Retake chapter</button>`;
+  $("#main").innerHTML = `
+    <header class="head">
+      <div class="eyebrow">Chapter ${c.n}</div>
+      <h1>${c.title}</h1>
+      ${buret(s.ok, s.done, s.total)}
+    </header>
+    ${notes(c)}
+    <section class="qlist" aria-label="Quiz">${c.qs.map((q, i) => qCard(q, i, rec(n, i), `${n}-${i}`)).join("")}</section>
+    <div class="row">${resetUI}</div>
+    <nav class="pager" aria-label="Chapter navigation">
+      ${prev ? `<a class="btn quiet" href="#ch${prev.n}">← Ch ${prev.n}: ${prev.title}</a>` : `<a class="btn quiet" href="#overview">← Overview</a>`}
+      ${next ? `<a class="btn" href="#ch${next.n}">Ch ${next.n}: ${next.title} →</a>` : `<a class="btn" href="#mixed">Mixed review →</a>`}
+    </nav>`;
+}
+
+function renderOverview() {
+  const a = allStats();
+  $("#main").innerHTML = `
+    <header class="head">
+      <div class="eyebrow">Chapters 0–12</div>
+      <h1>Review the measurement and equilibrium chapters</h1>
+      <p class="lede">Each chapter has a short summary of key ideas and relationships, followed by a quiz of concept checks and worked calculations. You get feedback and an explanation after every answer. Progress is saved in this browser.</p>
+    </header>
+    <div class="stats">
+      <div class="stat"><b>${a.ok}<span class="mono" style="font-size:var(--s1);color:var(--muted)">/${a.total}</span></b><span>correct</span></div>
+      <div class="stat"><b>${a.done}</b><span>answered</span></div>
+      <div class="stat"><b>${a.done ? Math.round(a.ok / a.done * 100) + "%" : "–"}</b><span>accuracy</span></div>
+    </div>
+    ${buret(a.ok, a.done, a.total, true)}
+    <section class="panel" aria-labelledby="mixh">
+      <h2 id="mixh">Mixed review</h2>
+      <p class="lede">Draw 10 random questions from the chapters you choose. Mixed sessions don't change your chapter scores.</p>
+      <div class="chips" role="group" aria-label="Chapters to include">
+        ${CH.map(c => `<button type="button" class="chip" data-mix="${c.n}" aria-pressed="${mixSel.has(c.n)}" title="${c.title}">Ch ${c.n}</button>`).join("")}
+      </div>
+      <div class="row">
+        <button class="btn primary" type="button" data-act="mix-start" ${mixSel.size ? "" : "disabled"}>Start 10 questions</button>
+        <button class="btn quiet" type="button" data-act="mix-all">Select all</button>
+        <button class="btn quiet" type="button" data-act="mix-none">Clear</button>
+      </div>
+    </section>
+    <section class="grid" aria-label="Chapters">
+      ${CH.map(c => { const s = chStats(c); return `<a class="card" href="#ch${c.n}">
+        <span class="n">Chapter ${c.n} · ${s.total} questions</span><h3>${c.title}</h3>${buret(s.ok, s.done, s.total, true)}
+        <span class="n">${s.done ? `${s.ok}/${s.total} correct` : "Not started"}</span></a>`; }).join("")}
+    </section>
+    <footer>Questions and summaries are original review material, organized to follow the chapter sequence of Harris &amp; Lucy, <i>Quantitative Chemical Analysis</i>, 9th ed. Assume 25 °C unless a problem says otherwise. Numeric answers accept a small rounding tolerance.</footer>`;
+}
+
+function startMixed() {
+  const pool = [];
+  CH.forEach(c => { if (mixSel.has(c.n)) c.qs.forEach((_, i) => pool.push({ ch: c.n, i })); });
+  for (let k = pool.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [pool[k], pool[j]] = [pool[j], pool[k]]; }
+  mixed = { items: pool.slice(0, 10), recs: {} };
+}
+
+function renderMixed() {
+  if (!mixed) startMixed();
+  const n = mixed.items.length, done = Object.keys(mixed.recs).length;
+  const ok = Object.values(mixed.recs).filter(r => r.c).length;
+  $("#main").innerHTML = `
+    <header class="head">
+      <div class="eyebrow">Mixed review</div>
+      <h1>${n} questions from ${[...new Set(mixed.items.map(x => x.ch))].sort((a, b) => a - b).map(x => "Ch " + x).join(", ")}</h1>
+      ${buret(ok, done, n)}
+    </header>
+    <section class="qlist" aria-label="Mixed quiz">
+      ${mixed.items.map((it, k) => {
+        const c = CH.find(x => x.n === it.ch);
+        return qCard(c.qs[it.i], k, mixed.recs[k], `m-${k}`).replace('<span class="q-kind">', `<span class="q-kind">Ch ${c.n} · `);
+      }).join("")}
+    </section>
+    ${done === n ? `<div class="panel"><p class="result">You scored ${ok} of ${n}.</p>
+      <p class="lede">${ok === n ? "Every one correct." : "Review the explanations above, then reread the key ideas for the chapters where you missed questions."}</p></div>` : ""}
+    <div class="row">
+      <button class="btn primary" type="button" data-act="mix-new">New set of 10</button>
+      <a class="btn quiet" href="#overview">Change chapters</a>
+    </div>`;
+}
+
+/* ============================================================
+   ANSWERING
+   ============================================================ */
+function lookup(key) {
+  if (key.startsWith("m-")) {
+    const k = +key.slice(2), it = mixed.items[k];
+    return { q: CH.find(x => x.n === it.ch).qs[it.i], save: r => { mixed.recs[k] = r; }, idx: k };
+  }
+  const [ch, i] = key.split("-").map(Number);
+  return { q: CH.find(x => x.n === ch).qs[i], save: r => setRec(ch, i, r), idx: i, ch };
+}
+
+function answered(key) {
+  const L = lookup(key);
+  const r = key.startsWith("m-") ? mixed.recs[L.idx] : rec(L.ch, L.idx);
+  const el = document.getElementById("q-" + key);
+  el.outerHTML = qCard(L.q, L.idx, r, key).replace('<span class="q-kind">',
+    key.startsWith("m-") ? `<span class="q-kind">Ch ${mixed.items[L.idx].ch} · ` : '<span class="q-kind">');
+  // refresh meters without re-rendering the list
+  const view = route();
+  if (view.type === "ch") {
+    const c = CH.find(x => x.n === view.n), s = chStats(c);
+    document.querySelector(".head .buret").outerHTML = buret(s.ok, s.done, s.total);
+    renderNav(view.n);
+    const rb = document.querySelector('[data-act="reset"]'); if (rb) rb.disabled = !s.done;
+  } else if (view.type === "mixed") {
+    const n = mixed.items.length, done = Object.keys(mixed.recs).length;
+    if (done === n) { const y = window.scrollY; renderMixed(); window.scrollTo(0, y); }
+    else { const ok = Object.values(mixed.recs).filter(r => r.c).length; document.querySelector(".head .buret").outerHTML = buret(ok, done, n); }
+  }
+  const fb = document.querySelector(`#q-${CSS.escape(key)} .fb`);
+  if (fb) fb.setAttribute("tabindex", "-1");
+}
+
+document.addEventListener("click", e => {
+  const opt = e.target.closest(".opt");
+  if (opt && !opt.disabled) {
+    const key = opt.dataset.key, j = +opt.dataset.opt, L = lookup(key);
+    L.save({ c: j === L.q.a, r: j });
+    answered(key);
+    return;
+  }
+  const chip = e.target.closest("[data-mix]");
+  if (chip) {
+    const n = +chip.dataset.mix;
+    mixSel.has(n) ? mixSel.delete(n) : mixSel.add(n);
+    chip.setAttribute("aria-pressed", mixSel.has(n));
+    $('[data-act="mix-start"]').disabled = !mixSel.size;
+    return;
+  }
+  const act = e.target.closest("[data-act]");
+  if (!act) return;
+  const a = act.dataset.act, view = route();
+  if (a === "mix-start" || a === "mix-new") {
+    startMixed();
+    if (location.hash === "#mixed") { renderMixed(); window.scrollTo(0, 0); } else location.hash = "mixed";
+  } else if (a === "mix-all" || a === "mix-none") {
+    mixSel = a === "mix-all" ? new Set(CH.map(c => c.n)) : new Set();
+    renderOverview();
+  } else if (a === "reset") { pendingReset = view.n; renderChapter(view.n); $('[data-act="reset-no"]').focus(); }
+  else if (a === "reset-no") { pendingReset = null; renderChapter(view.n); }
+  else if (a === "reset-yes") {
+    delete store[view.n]; save(); pendingReset = null;
+    renderChapter(view.n); renderNav(view.n); window.scrollTo(0, 0);
+  }
+});
+
+document.addEventListener("submit", e => {
+  const f = e.target.closest("form.num");
+  if (!f) return;
+  e.preventDefault();
+  const key = f.dataset.key, L = lookup(key);
+  const input = document.getElementById("in-" + key), raw = input.value;
+  const v = parseNum(raw);
+  const err = document.getElementById("err-" + key);
+  if (Number.isNaN(v)) {
+    err.textContent = "Enter a number, such as 0.0250 or 8.95e-5 (units are optional).";
+    err.hidden = false; input.focus(); return;
+  }
+  L.save({ c: numOK(L.q, v), r: raw.trim() });
+  answered(key);
+});
+
+/* ============================================================
+   ROUTING
+   ============================================================ */
+function route() {
+  const h = location.hash.replace("#", "");
+  const m = /^ch(\d{1,2})$/.exec(h);
+  if (m && CH.some(c => c.n === +m[1])) return { type: "ch", n: +m[1] };
+  if (h === "mixed") return { type: "mixed" };
+  return { type: "overview" };
+}
+function show() {
+  const v = route();
+  pendingReset = null;
+  if (v.type === "ch") { renderChapter(v.n); renderNav(v.n); }
+  else if (v.type === "mixed") { renderMixed(); renderNav(-1); }
+  else { renderOverview(); renderNav(-1); }
+  document.title = v.type === "ch" ? `Ch ${v.n} · Quantitative Analysis Review` : "Quantitative Analysis Review";
+}
+window.addEventListener("hashchange", () => { show(); window.scrollTo(0, 0); });
+show();
+</script>
+
+</body>
+</html>
